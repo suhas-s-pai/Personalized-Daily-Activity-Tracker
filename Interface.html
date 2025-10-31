@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🔥 Weekly Activity Tracker 🔥</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+    /* --- BASE SETUP --- */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Poppins", sans-serif;
+      color: #fff;
+      overflow-x: hidden;
+      height: 100vh;
+      position: relative;
+      background: radial-gradient(circle at bottom, #ff6600 0%, #000000 70%);
+    }
+
+    /* --- FIRE BACKGROUND --- */
+    .fire-bg {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(270deg, #ff4b1f, #ff6600, #ffcc33, #ff3300);
+      background-size: 800% 800%;
+      animation: fireMove 8s ease infinite;
+      filter: blur(60px) brightness(1.2);
+      opacity: 0.8;
+      z-index: -3;
+    }
+
+    @keyframes fireMove {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* --- FLICKER EFFECT --- */
+    .flicker {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle, rgba(255,255,0,0.08) 0%, transparent 70%);
+      animation: flickerAnim 0.2s infinite alternate;
+      z-index: -2;
+    }
+
+    @keyframes flickerAnim {
+      0% { opacity: 0.6; }
+      100% { opacity: 1; }
+    }
+
+    /* --- SPARK PARTICLES --- */
+    .sparks {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      z-index: -1;
+    }
+
+    .spark {
+      position: absolute;
+      bottom: -10px;
+      width: 3px;
+      height: 3px;
+      background: radial-gradient(circle, #ffea00 0%, #ff6600 100%);
+      border-radius: 50%;
+      animation: rise 5s linear infinite;
+      opacity: 0.8;
+    }
+
+    @keyframes rise {
+      0% { transform: translateY(0) scale(1); opacity: 1; }
+      100% { transform: translateY(-100vh) scale(0.2); opacity: 0; }
+    }
+
+    /* Random spark generation */
+    @keyframes randomMove {
+      from { transform: translateX(0); }
+      to { transform: translateX(30px); }
+    }
+
+    /* --- CONTAINER --- */
+    .container {
+      position: relative;
+      z-index: 10;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(20px);
+      border-radius: 20px;
+      padding: 30px;
+      width: 90%;
+      max-width: 1000px;
+      margin: 60px auto;
+      border: 2px solid rgba(255, 200, 0, 0.3);
+      box-shadow: 0 0 25px rgba(255, 100, 0, 0.6), 0 0 60px rgba(255, 200, 0, 0.3);
+      animation: glowFire 2s infinite alternate;
+    }
+
+    @keyframes glowFire {
+      0% { box-shadow: 0 0 15px #ff6a00, 0 0 40px #ffcc00; }
+      100% { box-shadow: 0 0 30px #ff4500, 0 0 70px #ffaa00; }
+    }
+
+    /* --- HEADER --- */
+    h1 {
+      text-align: center;
+      font-weight: 600;
+      color: #ffcc00;
+      text-shadow: 0 0 15px #ff6600, 0 0 40px #ff3300;
+      letter-spacing: 1px;
+      animation: flamePulse 3s ease-in-out infinite alternate;
+    }
+
+    @keyframes flamePulse {
+      0% { text-shadow: 0 0 10px #ff6600, 0 0 25px #ff3300; }
+      100% { text-shadow: 0 0 25px #ffaa00, 0 0 60px #ff6600; }
+    }
+
+    /* --- FORM --- */
+    .form {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin: 20px 0;
+    }
+
+    select, input, button {
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: none;
+      outline: none;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    select, input {
+      background: rgba(255, 255, 255, 0.15);
+      color: #fff;
+      width: 180px;
+      text-align: center;
+      box-shadow: 0 0 10px rgba(255,100,0,0.3);
+    }
+
+    select:focus, input:focus {
+      background: rgba(255, 255, 255, 0.3);
+      transform: scale(1.05);
+      box-shadow: 0 0 20px rgba(255,150,0,0.5);
+    }
+
+    button {
+      background: linear-gradient(135deg, #ff6600, #ffaa00);
+      color: white;
+      cursor: pointer;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      box-shadow: 0 0 15px rgba(255,150,0,0.7);
+    }
+
+    button:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 30px rgba(255,200,0,1);
+    }
+
+    h2 {
+      text-align: center;
+      margin-top: 25px;
+      color: #fff;
+      text-shadow: 0 0 10px rgba(255,150,0,0.7);
+    }
+
+    /* --- TABLE --- */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      overflow: hidden;
+      border-radius: 15px;
+      margin-top: 15px;
+      animation: fadeInUp 1s ease;
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    th, td {
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      text-align: center;
+      padding: 10px;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+    }
+
+    th {
+      background: rgba(255, 100, 0, 0.3);
+      color: #fff;
+    }
+
+    td {
+      background: rgba(255, 255, 255, 0.05);
+      color: #fff;
+      cursor: pointer;
+    }
+
+    td:hover {
+      background: rgba(255, 140, 0, 0.3);
+      transform: scale(1.03);
+    }
+
+    td.filled {
+      background: linear-gradient(135deg, #ff3300, #ffcc00);
+      font-weight: 600;
+      animation: popIn 0.5s ease;
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0.5); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <!-- FIRE BACKGROUND LAYERS -->
+  <div class="fire-bg"></div>
+  <div class="flicker"></div>
+  <div class="sparks"></div>
+
+  <div class="container">
+    <h1>🔥 Weekly Activity Tracker 🔥</h1>
+
+    <div class="form">
+      <select id="day">
+        <option value="">Select Day</option>
+        <option>Monday</option>
+        <option>Tuesday</option>
+        <option>Wednesday</option>
+        <option>Thursday</option>
+        <option>Friday</option>
+        <option>Saturday</option>
+        <option>Sunday</option>
+      </select>
+
+      <input type="time" id="startTime" />
+      <input type="time" id="endTime" />
+      <input type="text" id="activity" placeholder="Enter Activity" />
+      <button id="addBtn">Add</button>
+    </div>
+
+    <h2>🔥 Your Weekly Schedule 🔥</h2>
+    <div id="board"></div>
+  </div>
+
+  <script>
+    // Generate sparks dynamically
+    const sparkContainer = document.querySelector('.sparks');
+    for (let i = 0; i < 40; i++) {
+      const spark = document.createElement('div');
+      spark.classList.add('spark');
+      spark.style.left = Math.random() * 100 + '%';
+      spark.style.animationDelay = Math.random() * 5 + 's';
+      spark.style.animationDuration = 3 + Math.random() * 3 + 's';
+      sparkContainer.appendChild(spark);
+    }
+
+    // Weekly board logic
+    const boardDiv = document.getElementById("board");
+    const addBtn = document.getElementById("addBtn");
+    const dayInput = document.getElementById("day");
+    const startInput = document.getElementById("startTime");
+    const endInput = document.getElementById("endTime");
+    const activityInput = document.getElementById("activity");
+
+    const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+    const hours = [];
+
+    for (let i = 0; i < 24; i += 2) {
+      const start = i.toString().padStart(2, "0") + ":00";
+      const end = (i + 2).toString().padStart(2, "0") + ":00";
+      hours.push(`${start} - ${end}`);
+    }
+
+    function createBoard() {
+      const table = document.createElement("table");
+      const headerRow = document.createElement("tr");
+      headerRow.innerHTML = "<th>Day / Time</th>" + hours.map(h => `<th>${h}</th>`).join("");
+      table.appendChild(headerRow);
+
+      days.forEach(day => {
+        const row = document.createElement("tr");
+        row.innerHTML = `<th>${day}</th>` + hours.map(() => `<td></td>`).join("");
+        table.appendChild(row);
+      });
+
+      boardDiv.innerHTML = "";
+      boardDiv.appendChild(table);
+    }
+
+    createBoard();
+
+    addBtn.addEventListener("click", () => {
+      const day = dayInput.value;
+      const start = startInput.value;
+      const end = endInput.value;
+      const activity = activityInput.value.trim();
+
+      if (!day || !start || !end || !activity) {
+        alert("Please fill in all fields!");
+        return;
+      }
+
+      const table = document.querySelector("table");
+      const dayRow = Array.from(table.rows).find(row => row.cells[0]?.textContent === day);
+      if (!dayRow) return;
+
+      const startHour = parseInt(start.split(":")[0]);
+      const endHour = parseInt(end.split(":")[0]);
+
+      for (let i = 0; i < hours.length; i++) {
+        const [slotStart] = hours[i].split(" - ");
+        const slotStartHour = parseInt(slotStart.split(":")[0]);
+        const slotEndHour = slotStartHour + 2;
+
+        if (slotStartHour >= startHour && slotEndHour <= endHour) {
+          const cell = dayRow.cells[i + 1];
+          if (cell) {
+            cell.textContent = activity;
+            cell.classList.add("filled");
+          }
+        }
+      }
+
+      dayInput.value = "";
+      startInput.value = "";
+      endInput.value = "";
+      activityInput.value = "";
+    });
+  </script>
+</body>
+</html>
