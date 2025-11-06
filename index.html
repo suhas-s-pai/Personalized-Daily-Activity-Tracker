@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🔥 Daily Activity Tracker 🔥</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+    /* --- BASE SETUP --- */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Poppins", sans-serif;
+      color: #fff;
+      overflow-x: hidden;
+      height: 100vh;
+      position: relative;
+      background: radial-gradient(circle at bottom, #ff6600 0%, #000000 70%);
+    }
+
+    /* --- FIRE BACKGROUND --- */
+    .fire-bg {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(270deg, #ff4b1f, #ff6600, #ffcc33, #ff3300);
+      background-size: 800% 800%;
+      animation: fireMove 8s ease infinite;
+      filter: blur(60px) brightness(1.2);
+      opacity: 0.8;
+      z-index: -3;
+    }
+
+    @keyframes fireMove {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* --- FLICKER EFFECT --- */
+    .flicker {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle, rgba(255,255,0,0.08) 0%, transparent 70%);
+      animation: flickerAnim 0.2s infinite alternate;
+      z-index: -2;
+    }
+
+    @keyframes flickerAnim {
+      0% { opacity: 0.6; }
+      100% { opacity: 1; }
+    }
+
+    /* --- SPARK PARTICLES --- */
+    .sparks {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      z-index: -1;
+    }
+
+    .spark {
+      position: absolute;
+      bottom: -10px;
+      width: 3px;
+      height: 3px;
+      background: radial-gradient(circle, #ffea00 0%, #ff6600 100%);
+      border-radius: 50%;
+      animation: rise 5s linear infinite;
+      opacity: 0.8;
+    }
+
+    @keyframes rise {
+      0% { transform: translateY(0) scale(1); opacity: 1; }
+      100% { transform: translateY(-100vh) scale(0.2); opacity: 0; }
+    }
+
+    /* Random spark generation */
+    @keyframes randomMove {
+      from { transform: translateX(0); }
+      to { transform: translateX(30px); }
+    }
+
+    /* --- CONTAINER --- */
+    .container {
+      position: relative;
+      z-index: 10;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(20px);
+      border-radius: 20px;
+      padding: 30px;
+      width: 90%;
+      max-width: 1000px;
+      margin: 60px auto;
+      border: 2px solid rgba(255, 200, 0, 0.3);
+      box-shadow: 0 0 25px rgba(255, 100, 0, 0.6), 0 0 60px rgba(255, 200, 0, 0.3);
+      animation: glowFire 2s infinite alternate;
+    }
+
+    @keyframes glowFire {
+      0% { box-shadow: 0 0 15px #ff6a00, 0 0 40px #ffcc00; }
+      100% { box-shadow: 0 0 30px #ff4500, 0 0 70px #ffaa00; }
+    }
+
+    /* --- HEADER --- */
+    h1 {
+      text-align: center;
+      font-weight: 600;
+      color: #ffcc00;
+      text-shadow: 0 0 15px #ff6600, 0 0 40px #ff3300;
+      letter-spacing: 1px;
+      animation: flamePulse 3s ease-in-out infinite alternate;
+    }
+
+    @keyframes flamePulse {
+      0% { text-shadow: 0 0 10px #ff6600, 0 0 25px #ff3300; }
+      100% { text-shadow: 0 0 25px #ffaa00, 0 0 60px #ff6600; }
+    }
+
+    /* --- FORM --- */
+    .form {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin: 20px 0;
+    }
+
+    select, input, button {
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: none;
+      outline: none;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    select, input {
+      background: rgba(255, 255, 255, 0.15);
+      color: #fff;
+      width: 180px;
+      text-align: center;
+      box-shadow: 0 0 10px rgba(255,100,0,0.3);
+    }
+
+    select:focus, input:focus {
+      background: rgba(255, 255, 255, 0.3);
+      transform: scale(1.05);
+      box-shadow: 0 0 20px rgba(255,150,0,0.5);
+    }
+
+    button {
+      background: linear-gradient(135deg, #ff6600, #ffaa00);
+      color: white;
+      cursor: pointer;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      box-shadow: 0 0 15px rgba(255,150,0,0.7);
+    }
+
+    button:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 30px rgba(255,200,0,1);
+    }
+
+    h2 {
+      text-align: center;
+      margin-top: 25px;
+      color: #fff;
+      text-shadow: 0 0 10px rgba(255,150,0,0.7);
+    }
+
+    /* --- TABLE --- */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      overflow: hidden;
+      border-radius: 15px;
+      margin-top: 15px;
+      animation: fadeInUp 1s ease;
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    th, td {
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      text-align: center;
+      padding: 10px;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+    }
+
+    th {
+      background: rgba(255, 100, 0, 0.3);
+      color: #fff;
+    }
+
+    td {
+      background: rgba(255, 255, 255, 0.05);
+      color: #fff;
+      cursor: pointer;
+    }
+
+    td:hover {
+      background: rgba(255, 140, 0, 0.3);
+      transform: scale(1.03);
+    }
+
+    td.filled {
+      background: linear-gradient(135deg, #ff3300, #ffcc00);
+      font-weight: 600;
+      animation: popIn 0.5s ease;
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0.5); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    /* --- TABS --- */
+    .tabs {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin: 20px 0;
+      flex-wrap: wrap;
+    }
+
+    .tab-btn {
+      padding: 10px 20px;
+      background: rgba(255, 100, 0, 0.3);
+      color: #fff;
+      border: 2px solid rgba(255, 200, 0, 0.3);
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: 600;
+    }
+
+    .tab-btn:hover {
+      background: rgba(255, 150, 0, 0.5);
+      transform: scale(1.05);
+    }
+
+    .tab-btn.active {
+      background: linear-gradient(135deg, #ff6600, #ffaa00);
+      box-shadow: 0 0 15px rgba(255,150,0,0.7);
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+      animation: fadeInUp 0.5s ease;
+    }
+
+    /* --- MOOD SELECTOR --- */
+    .mood-selector {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin: 10px 0;
+    }
+
+    .mood-option {
+      padding: 8px 15px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 2px solid transparent;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 0.9rem;
+    }
+
+    .mood-option:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: scale(1.1);
+    }
+
+    .mood-option.selected {
+      background: linear-gradient(135deg, #ff6600, #ffaa00);
+      border-color: #ffcc00;
+      box-shadow: 0 0 10px rgba(255,200,0,0.5);
+    }
+
+    /* --- SUMMARY CARDS --- */
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 15px;
+      margin: 20px 0;
+    }
+
+    .summary-card {
+      background: rgba(255, 255, 255, 0.1);
+      border: 2px solid rgba(255, 200, 0, 0.3);
+      border-radius: 15px;
+      padding: 20px;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .summary-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 0 20px rgba(255,150,0,0.5);
+    }
+
+    .summary-card h3 {
+      color: #ffcc00;
+      margin-bottom: 10px;
+      font-size: 1.1rem;
+    }
+
+    .summary-card .value {
+      font-size: 2rem;
+      font-weight: 600;
+      color: #fff;
+      text-shadow: 0 0 10px rgba(255,150,0,0.7);
+    }
+
+    /* --- ACTIVITY LIST --- */
+    .activity-list {
+      margin: 20px 0;
+    }
+
+    .activity-item {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 200, 0, 0.3);
+      border-radius: 10px;
+      padding: 15px;
+      margin: 10px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      transition: all 0.3s ease;
+    }
+
+    .activity-item:hover {
+      background: rgba(255, 150, 0, 0.2);
+      transform: translateX(5px);
+    }
+
+    .activity-info {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .activity-name {
+      font-weight: 600;
+      color: #ffcc00;
+      font-size: 1.1rem;
+    }
+
+    .activity-time {
+      color: #fff;
+      font-size: 0.9rem;
+      margin-top: 5px;
+    }
+
+    .activity-mood {
+      padding: 5px 15px;
+      background: rgba(255, 200, 0, 0.3);
+      border-radius: 20px;
+      font-size: 0.9rem;
+    }
+
+    .delete-btn {
+      padding: 5px 15px;
+      background: rgba(255, 50, 50, 0.5);
+      border: none;
+      border-radius: 5px;
+      color: #fff;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .delete-btn:hover {
+      background: rgba(255, 50, 50, 0.8);
+      transform: scale(1.1);
+    }
+
+    /* --- SUGGESTIONS --- */
+    .suggestions {
+      background: rgba(255, 200, 0, 0.1);
+      border: 2px solid rgba(255, 200, 0, 0.3);
+      border-radius: 15px;
+      padding: 20px;
+      margin: 20px 0;
+    }
+
+    .suggestions h3 {
+      color: #ffcc00;
+      margin-bottom: 15px;
+    }
+
+    .suggestion-item {
+      background: rgba(255, 255, 255, 0.1);
+      border-left: 4px solid #ff6600;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 5px;
+    }
+
+    /* --- CHARTS --- */
+    .chart-container {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 15px;
+      padding: 20px;
+      margin: 20px 0;
+    }
+
+    .bar-chart {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .bar-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .bar-label {
+      min-width: 120px;
+      color: #ffcc00;
+      font-weight: 600;
+    }
+
+    .bar {
+      flex: 1;
+      height: 30px;
+      background: rgba(255, 200, 0, 0.2);
+      border-radius: 5px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #ff6600, #ffaa00);
+      transition: width 0.5s ease;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding-right: 10px;
+      color: #fff;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .date-input {
+      width: 200px !important;
+    }
+  </style>
+</head>
+<body>
+  <!-- FIRE BACKGROUND LAYERS -->
+  <div class="fire-bg"></div>
+  <div class="flicker"></div>
+  <div class="sparks"></div>
+
+  <div class="container">
+    <h1>🔥 Daily Activity Tracker 🔥</h1>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="log">📝 Log Activity</button>
+      <button class="tab-btn" data-tab="summary">📊 Daily Summary</button>
+      <button class="tab-btn" data-tab="analysis">🔍 Analysis</button>
+      <button class="tab-btn" data-tab="suggestions">💡 Suggestions</button>
+    </div>
+
+    <!-- Log Activity Tab -->
+    <div id="log" class="tab-content active">
+      <div class="form">
+        <input type="date" id="date" class="date-input" />
+        <input type="time" id="startTime" />
+        <input type="time" id="endTime" />
+        <input type="text" id="activity" placeholder="Enter Activity" />
+        <button id="addBtn">Add Activity</button>
+      </div>
+
+      <div class="mood-selector">
+        <span style="color: #ffcc00; font-weight: 600; width: 100%; text-align: center; margin-bottom: 10px;">Mood (Optional):</span>
+        <div class="mood-option" data-mood="😊 Happy">😊 Happy</div>
+        <div class="mood-option" data-mood="😌 Calm">😌 Calm</div>
+        <div class="mood-option" data-mood="😴 Tired">😴 Tired</div>
+        <div class="mood-option" data-mood="😃 Excited">😃 Excited</div>
+        <div class="mood-option" data-mood="😔 Sad">😔 Sad</div>
+        <div class="mood-option" data-mood="😤 Stressed">😤 Stressed</div>
+        <div class="mood-option" data-mood="😎 Productive">😎 Productive</div>
+        <div class="mood-option" data-mood="😑 Neutral">😑 Neutral</div>
+      </div>
+
+      <h2>🔥 Today's Activities 🔥</h2>
+      <div id="todayActivities" class="activity-list"></div>
+    </div>
+
+    <!-- Daily Summary Tab -->
+    <div id="summary" class="tab-content">
+      <h2>🔥 Daily Summary 🔥</h2>
+      <div style="text-align: center; margin: 20px 0;">
+        <input type="date" id="summaryDate" class="date-input" style="margin: 0 auto;" />
+        <button id="loadSummary" style="margin-left: 10px;">Load Summary</button>
+      </div>
+      <div id="summaryContent"></div>
+    </div>
+
+    <!-- Analysis Tab -->
+    <div id="analysis" class="tab-content">
+      <h2>🔥 Activity Analysis 🔥</h2>
+      <div id="analysisContent"></div>
+    </div>
+
+    <!-- Suggestions Tab -->
+    <div id="suggestions" class="tab-content">
+      <h2>🔥 Personalized Suggestions 🔥</h2>
+      <div id="suggestionsContent" class="suggestions"></div>
+    </div>
+  </div>
+
+  <script>
+    // Generate sparks dynamically
+    const sparkContainer = document.querySelector('.sparks');
+    for (let i = 0; i < 40; i++) {
+      const spark = document.createElement('div');
+      spark.classList.add('spark');
+      spark.style.left = Math.random() * 100 + '%';
+      spark.style.animationDelay = Math.random() * 5 + 's';
+      spark.style.animationDuration = 3 + Math.random() * 3 + 's';
+      sparkContainer.appendChild(spark);
+    }
+
+    // Storage key
+    const STORAGE_KEY = 'activityTracker';
+
+    // Initialize date to today
+    document.getElementById('date').valueAsDate = new Date();
+    document.getElementById('summaryDate').valueAsDate = new Date();
+
+    // Tab switching
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById(btn.dataset.tab).classList.add('active');
+        
+        if (btn.dataset.tab === 'summary') {
+          loadDailySummary();
+        } else if (btn.dataset.tab === 'analysis') {
+          loadAnalysis();
+        } else if (btn.dataset.tab === 'suggestions') {
+          loadSuggestions();
+        }
+      });
+    });
+
+    // Mood selection
+    let selectedMood = null;
+    document.querySelectorAll('.mood-option').forEach(option => {
+      option.addEventListener('click', () => {
+        document.querySelectorAll('.mood-option').forEach(o => o.classList.remove('selected'));
+        option.classList.add('selected');
+        selectedMood = option.dataset.mood;
+      });
+    });
+
+    // Get activities from localStorage
+    function getActivities() {
+      const data = localStorage.getItem(STORAGE_KEY);
+      return data ? JSON.parse(data) : [];
+    }
+
+    // Save activities to localStorage
+    function saveActivities(activities) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(activities));
+    }
+
+    // Calculate time difference in hours
+    function calculateHours(start, end) {
+      const startTime = new Date(`2000-01-01T${start}`);
+      const endTime = new Date(`2000-01-01T${end}`);
+      if (endTime < startTime) {
+        endTime.setDate(endTime.getDate() + 1);
+      }
+      return (endTime - startTime) / (1000 * 60 * 60);
+    }
+
+    // Add activity
+    document.getElementById('addBtn').addEventListener('click', () => {
+      const date = document.getElementById('date').value;
+      const start = document.getElementById('startTime').value;
+      const end = document.getElementById('endTime').value;
+      const activity = document.getElementById('activity').value.trim();
+
+      if (!date || !start || !end || !activity) {
+        alert("Please fill in date, start time, end time, and activity!");
+        return;
+      }
+
+      const hours = calculateHours(start, end);
+      if (hours <= 0) {
+        alert("End time must be after start time!");
+        return;
+      }
+
+      const activities = getActivities();
+      const newActivity = {
+        id: Date.now(),
+        date,
+        start,
+        end,
+        activity,
+        mood: selectedMood || null,
+        hours: hours
+      };
+
+      activities.push(newActivity);
+      saveActivities(activities);
+
+      // Clear form
+      document.getElementById('startTime').value = '';
+      document.getElementById('endTime').value = '';
+      document.getElementById('activity').value = '';
+      document.querySelectorAll('.mood-option').forEach(o => o.classList.remove('selected'));
+      selectedMood = null;
+
+      // Refresh today's activities
+      displayTodayActivities();
+    });
+
+    // Display today's activities
+    function displayTodayActivities() {
+      const today = new Date().toISOString().split('T')[0];
+      const activities = getActivities().filter(a => a.date === today);
+      const container = document.getElementById('todayActivities');
+
+      if (activities.length === 0) {
+        container.innerHTML = '<p style="text-align: center; color: #ffcc00; margin: 20px;">No activities logged for today yet!</p>';
+        return;
+      }
+
+      container.innerHTML = activities
+        .sort((a, b) => a.start.localeCompare(b.start))
+        .map(act => `
+          <div class="activity-item">
+            <div class="activity-info">
+              <div class="activity-name">${act.activity}</div>
+              <div class="activity-time">${act.start} - ${act.end} (${act.hours.toFixed(1)}h)</div>
+            </div>
+            ${act.mood ? `<div class="activity-mood">${act.mood}</div>` : ''}
+            <button class="delete-btn" onclick="deleteActivity(${act.id})">Delete</button>
+          </div>
+        `).join('');
+    }
+
+    // Delete activity
+    window.deleteActivity = function(id) {
+      if (confirm('Are you sure you want to delete this activity?')) {
+        const activities = getActivities().filter(a => a.id !== id);
+        saveActivities(activities);
+        displayTodayActivities();
+        if (document.getElementById('summary').classList.contains('active')) {
+          loadDailySummary();
+        }
+      }
+    };
+
+    // Load daily summary
+    function loadDailySummary() {
+      const date = document.getElementById('summaryDate').value;
+      const activities = getActivities().filter(a => a.date === date);
+
+      const container = document.getElementById('summaryContent');
+
+      if (activities.length === 0) {
+        container.innerHTML = '<p style="text-align: center; color: #ffcc00; margin: 20px;">No activities found for this date!</p>';
+        return;
+      }
+
+      // Calculate totals
+      const totalHours = activities.reduce((sum, a) => sum + a.hours, 0);
+      const activityCount = activities.length;
+      const uniqueActivities = [...new Set(activities.map(a => a.activity))].length;
+
+      // Group by activity
+      const activityGroups = {};
+      activities.forEach(act => {
+        if (!activityGroups[act.activity]) {
+          activityGroups[act.activity] = { hours: 0, count: 0, moods: [] };
+        }
+        activityGroups[act.activity].hours += act.hours;
+        activityGroups[act.activity].count += 1;
+        if (act.mood) {
+          activityGroups[act.activity].moods.push(act.mood);
+        }
+      });
+
+      // Summary cards
+      let html = `
+        <div class="summary-grid">
+          <div class="summary-card">
+            <h3>Total Time</h3>
+            <div class="value">${totalHours.toFixed(1)}h</div>
+          </div>
+          <div class="summary-card">
+            <h3>Activities</h3>
+            <div class="value">${activityCount}</div>
+          </div>
+          <div class="summary-card">
+            <h3>Unique Activities</h3>
+            <div class="value">${uniqueActivities}</div>
+          </div>
+        </div>
+        <h3 style="color: #ffcc00; margin-top: 30px; text-align: center;">Time Spent Per Activity</h3>
+        <div class="chart-container">
+          <div class="bar-chart">
+      `;
+
+      // Sort by hours
+      const sortedActivities = Object.entries(activityGroups)
+        .sort((a, b) => b[1].hours - a[1].hours);
+
+      sortedActivities.forEach(([activity, data]) => {
+        const percentage = (data.hours / totalHours) * 100;
+        html += `
+          <div class="bar-item">
+            <div class="bar-label">${activity}</div>
+            <div class="bar">
+              <div class="bar-fill" style="width: ${percentage}%">${data.hours.toFixed(1)}h</div>
+            </div>
+          </div>
+        `;
+      });
+
+      html += `
+          </div>
+        </div>
+        <h3 style="color: #ffcc00; margin-top: 30px; text-align: center;">Activity Details</h3>
+        <div class="activity-list">
+      `;
+
+      activities
+        .sort((a, b) => a.start.localeCompare(b.start))
+        .forEach(act => {
+          html += `
+            <div class="activity-item">
+              <div class="activity-info">
+                <div class="activity-name">${act.activity}</div>
+                <div class="activity-time">${act.start} - ${act.end} (${act.hours.toFixed(1)}h)</div>
+              </div>
+              ${act.mood ? `<div class="activity-mood">${act.mood}</div>` : ''}
+            </div>
+          `;
+        });
+
+      html += '</div>';
+      container.innerHTML = html;
+    }
+
+    document.getElementById('loadSummary').addEventListener('click', loadDailySummary);
+
+    // Load analysis
+    function loadAnalysis() {
+      const activities = getActivities();
+      const container = document.getElementById('analysisContent');
+
+      if (activities.length === 0) {
+        container.innerHTML = '<p style="text-align: center; color: #ffcc00; margin: 20px;">No activities to analyze yet! Start logging activities to see patterns.</p>';
+        return;
+      }
+
+      // Most common activities
+      const activityCounts = {};
+      activities.forEach(a => {
+        activityCounts[a.activity] = (activityCounts[a.activity] || 0) + 1;
+      });
+      const mostCommon = Object.entries(activityCounts)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 5);
+
+      // Total time per activity
+      const activityHours = {};
+      activities.forEach(a => {
+        activityHours[a.activity] = (activityHours[a.activity] || 0) + a.hours;
+      });
+      const topTime = Object.entries(activityHours)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 5);
+
+      // Mood analysis
+      const moodCounts = {};
+      activities.filter(a => a.mood).forEach(a => {
+        moodCounts[a.mood] = (moodCounts[a.mood] || 0) + 1;
+      });
+      const topMoods = Object.entries(moodCounts)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 5);
+
+      // Time patterns (morning, afternoon, evening, night)
+      const timePatterns = { morning: 0, afternoon: 0, evening: 0, night: 0 };
+      activities.forEach(a => {
+        const hour = parseInt(a.start.split(':')[0]);
+        if (hour >= 6 && hour < 12) timePatterns.morning += a.hours;
+        else if (hour >= 12 && hour < 17) timePatterns.afternoon += a.hours;
+        else if (hour >= 17 && hour < 22) timePatterns.evening += a.hours;
+        else timePatterns.night += a.hours;
+      });
+
+      // Average daily hours
+      const dates = [...new Set(activities.map(a => a.date))];
+      const totalHours = activities.reduce((sum, a) => sum + a.hours, 0);
+      const avgDaily = dates.length > 0 ? totalHours / dates.length : 0;
+
+      let html = `
+        <div class="summary-grid">
+          <div class="summary-card">
+            <h3>Total Activities</h3>
+            <div class="value">${activities.length}</div>
+          </div>
+          <div class="summary-card">
+            <h3>Days Tracked</h3>
+            <div class="value">${dates.length}</div>
+          </div>
+          <div class="summary-card">
+            <h3>Avg Daily Hours</h3>
+            <div class="value">${avgDaily.toFixed(1)}h</div>
+          </div>
+        </div>
+
+        <div class="chart-container">
+          <h3 style="color: #ffcc00; margin-bottom: 15px;">Most Common Activities</h3>
+          <div class="bar-chart">
+      `;
+
+      mostCommon.forEach(([activity, count]) => {
+        const maxCount = mostCommon[0][1];
+        const percentage = (count / maxCount) * 100;
+        html += `
+          <div class="bar-item">
+            <div class="bar-label">${activity}</div>
+            <div class="bar">
+              <div class="bar-fill" style="width: ${percentage}%">${count} times</div>
+            </div>
+          </div>
+        `;
+      });
+
+      html += `
+          </div>
+        </div>
+
+        <div class="chart-container">
+          <h3 style="color: #ffcc00; margin-bottom: 15px;">Top Activities by Time</h3>
+          <div class="bar-chart">
+      `;
+
+      const maxHours = topTime[0] ? topTime[0][1] : 1;
+      topTime.forEach(([activity, hours]) => {
+        const percentage = (hours / maxHours) * 100;
+        html += `
+          <div class="bar-item">
+            <div class="bar-label">${activity}</div>
+            <div class="bar">
+              <div class="bar-fill" style="width: ${percentage}%">${hours.toFixed(1)}h</div>
+            </div>
+          </div>
+        `;
+      });
+
+      html += `
+          </div>
+        </div>
+
+        <div class="chart-container">
+          <h3 style="color: #ffcc00; margin-bottom: 15px;">Time Patterns</h3>
+          <div class="bar-chart">
+      `;
+
+      const maxPattern = Math.max(...Object.values(timePatterns));
+      Object.entries(timePatterns).forEach(([period, hours]) => {
+        const percentage = maxPattern > 0 ? (hours / maxPattern) * 100 : 0;
+        html += `
+          <div class="bar-item">
+            <div class="bar-label">${period.charAt(0).toUpperCase() + period.slice(1)}</div>
+            <div class="bar">
+              <div class="bar-fill" style="width: ${percentage}%">${hours.toFixed(1)}h</div>
+            </div>
+          </div>
+        `;
+      });
+
+      if (topMoods.length > 0) {
+        html += `
+          </div>
+        </div>
+
+        <div class="chart-container">
+          <h3 style="color: #ffcc00; margin-bottom: 15px;">Most Common Moods</h3>
+          <div class="bar-chart">
+        `;
+
+        const maxMood = topMoods[0][1];
+        topMoods.forEach(([mood, count]) => {
+          const percentage = (count / maxMood) * 100;
+          html += `
+            <div class="bar-item">
+              <div class="bar-label">${mood}</div>
+              <div class="bar">
+                <div class="bar-fill" style="width: ${percentage}%">${count} times</div>
+              </div>
+            </div>
+          `;
+        });
+      }
+
+      html += '</div></div>';
+      container.innerHTML = html;
+    }
+
+    // Load suggestions
+    function loadSuggestions() {
+      const activities = getActivities();
+      const container = document.getElementById('suggestionsContent');
+
+      if (activities.length === 0) {
+        container.innerHTML = '<p style="text-align: center; color: #ffcc00; margin: 20px;">Start logging activities to get personalized suggestions!</p>';
+        return;
+      }
+
+      const suggestions = [];
+
+      // Calculate activity hours
+      const activityHours = {};
+      activities.forEach(a => {
+        activityHours[a.activity] = (activityHours[a.activity] || 0) + a.hours;
+      });
+
+      // Calculate total hours
+      const totalHours = activities.reduce((sum, a) => sum + a.hours, 0);
+      const dates = [...new Set(activities.map(a => a.date))];
+      const avgDaily = dates.length > 0 ? totalHours / dates.length : 0;
+
+      // Suggestion 1: Balance
+      const topActivity = Object.entries(activityHours).sort((a, b) => b[1] - a[1])[0];
+      if (topActivity && topActivity[1] > totalHours * 0.4) {
+        suggestions.push({
+          type: 'balance',
+          text: `You're spending ${((topActivity[1] / totalHours) * 100).toFixed(0)}% of your time on "${topActivity[0]}". Consider diversifying your activities for better balance!`
+        });
+      }
+
+      // Suggestion 2: Productivity
+      const productiveActivities = ['work', 'study', 'exercise', 'reading', 'learning'];
+      const hasProductive = activities.some(a => 
+        productiveActivities.some(pa => a.activity.toLowerCase().includes(pa))
+      );
+      if (!hasProductive && activities.length > 5) {
+        suggestions.push({
+          type: 'productivity',
+          text: 'Consider adding more productive activities like work, study, or exercise to your routine!'
+        });
+      }
+
+      // Suggestion 3: Rest
+      const restActivities = ['sleep', 'rest', 'relax', 'break'];
+      const restHours = activities
+        .filter(a => restActivities.some(ra => a.activity.toLowerCase().includes(ra)))
+        .reduce((sum, a) => sum + a.hours, 0);
+      if (restHours < totalHours * 0.2 && totalHours > 10) {
+        suggestions.push({
+          type: 'rest',
+          text: `You're only spending ${((restHours / totalHours) * 100).toFixed(0)}% of your time on rest. Make sure to take breaks and get enough sleep!`
+        });
+      }
+
+      // Suggestion 4: Consistency
+      if (dates.length < 3) {
+        suggestions.push({
+          type: 'consistency',
+          text: 'Track your activities for more days to get better insights and patterns!'
+        });
+      }
+
+      // Suggestion 5: Mood tracking
+      const moodCount = activities.filter(a => a.mood).length;
+      if (moodCount < activities.length * 0.5) {
+        suggestions.push({
+          type: 'mood',
+          text: `You've only logged mood for ${moodCount} out of ${activities.length} activities. Tracking mood can help identify patterns and improve well-being!`
+        });
+      }
+
+      // Suggestion 6: Time management
+      if (avgDaily > 16) {
+        suggestions.push({
+          type: 'time',
+          text: `You're averaging ${avgDaily.toFixed(1)} hours of tracked activities per day. Make sure you're getting enough rest!`
+        });
+      } else if (avgDaily < 4 && dates.length > 3) {
+        suggestions.push({
+          type: 'time',
+          text: `You're averaging ${avgDaily.toFixed(1)} hours per day. Consider tracking more activities to get better insights!`
+        });
+      }
+
+      // Suggestion 7: Activity variety
+      const uniqueActivities = Object.keys(activityHours).length;
+      if (uniqueActivities < 5 && activities.length > 10) {
+        suggestions.push({
+          type: 'variety',
+          text: `You have ${uniqueActivities} different activities. Try exploring new activities to add variety to your routine!`
+        });
+      }
+
+      if (suggestions.length === 0) {
+        suggestions.push({
+          type: 'general',
+          text: 'Great job tracking your activities! Keep it up to maintain healthy patterns.'
+        });
+      }
+
+      let html = '<h3>💡 Personalized Insights</h3>';
+      suggestions.forEach(suggestion => {
+        html += `
+          <div class="suggestion-item">
+            <strong>${suggestion.type.charAt(0).toUpperCase() + suggestion.type.slice(1)}:</strong> ${suggestion.text}
+          </div>
+        `;
+      });
+
+      container.innerHTML = html;
+    }
+
+    // Initialize
+    displayTodayActivities();
+  </script>
+</body>
+</html>
