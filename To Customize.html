@@ -166,59 +166,90 @@
     © 2025 Daily Tracker | Smart Reminders Enabled 💜
   </footer>
 
-  <script>
+  <!-- ✅ Firebase Integration -->
+  <script type="module">
+    // Import Firebase SDKs
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import { getDatabase, ref, push, onValue, update } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+
+    // ⚙️ Replace this with your own Firebase project configuration
+   const firebaseConfig = {
+  apiKey: "AIzaSyD7x7uIybDM3z8dswy7HNjYd0REE45nrqY",
+  authDomain: "personalized-activity-tracker.firebaseapp.com",
+  databaseURL: "https://personalized-activity-tracker-default-rtdb.firebaseio.com",
+  projectId: "personalized-activity-tracker",
+  storageBucket: "personalized-activity-tracker.firebasestorage.app",
+  messagingSenderId: "452488227481",
+  appId: "1:452488227481:web:ea00ffad71b2846bf66608",
+  measurementId: "G-LYB9NH4W5R"
+};
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
     const taskForm = document.getElementById("taskForm");
     const taskTableBody = document.querySelector("#taskTable tbody");
-    let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+    const tasksRef = ref(db, "tasks");
 
-    function renderTasks() {
-      taskTableBody.innerHTML = "";
-      tasks.forEach((task, index) => {
-        const row = document.createElement("tr");
-        row.innerHTML = `
-          <td>${task.name}</td>
-          <td>${task.start}</td>
-          <td>${task.end}</td>
-          <td>${task.completed ? "✅ Done" : "⏳ Pending"}</td>
-          <td>
-            ${!task.completed ? `<button class="complete-btn" onclick="markComplete(${index})">Mark Done</button>` : ""}
-          </td>
-        `;
-        taskTableBody.appendChild(row);
-      });
-    }
-
-    function markComplete(index) {
-      tasks[index].completed = true;
-      localStorage.setItem("tasks", JSON.stringify(tasks));
-      renderTasks();
-    }
-
+    // 🟢 Add a new task
     taskForm.addEventListener("submit", e => {
       e.preventDefault();
       const name = document.getElementById("taskName").value;
       const start = document.getElementById("startTime").value;
       const end = document.getElementById("endTime").value;
 
-      tasks.push({ name, start, end, completed: false });
-      localStorage.setItem("tasks", JSON.stringify(tasks));
-      renderTasks();
+      const newTask = { name, start, end, completed: false };
+      push(tasksRef, newTask);
+
       taskForm.reset();
     });
 
+    // 🟣 Display tasks in real-time
+    onValue(tasksRef, snapshot => {
+      const data = snapshot.val();
+      taskTableBody.innerHTML = "";
+
+      if (data) {
+        Object.entries(data).forEach(([id, task]) => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${task.name}</td>
+            <td>${task.start}</td>
+            <td>${task.end}</td>
+            <td>${task.completed ? "✅ Done" : "⏳ Pending"}</td>
+            <td>
+              ${!task.completed ? `<button class="complete-btn" onclick="markComplete('${id}')">Mark Done</button>` : ""}
+            </td>
+          `;
+          taskTableBody.appendChild(row);
+        });
+      }
+    });
+
+    // 🟠 Mark task as complete
+    window.markComplete = (id) => {
+      const taskRef = ref(db, `tasks/${id}`);
+      update(taskRef, { completed: true });
+    };
+
+    // 🔔 Reminder feature
     function checkReminders() {
       const now = new Date();
       const currentTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
 
-      tasks.forEach((task, index) => {
-        if (!task.completed && currentTime >= task.end) {
-          alert(`⏰ Reminder: Did you complete "${task.name}" scheduled till ${task.end}?`);
+      onValue(tasksRef, snapshot => {
+        const data = snapshot.val();
+        if (data) {
+          Object.values(data).forEach(task => {
+            if (!task.completed && currentTime >= task.end) {
+              alert(`⏰ Reminder: Did you complete "${task.name}" scheduled till ${task.end}?`);
+            }
+          });
         }
       });
     }
 
     setInterval(checkReminders, 60000); // check every minute
-    renderTasks();
   </script>
 </body>
 </html>
